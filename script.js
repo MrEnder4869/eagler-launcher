@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Eaglercraft Web Launcher</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="launcher-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <h2 class="title">Eagler Launcher</h2>
+            <div class="user-panel">
+                <input type="text" id="username" placeholder="Player Username" value="EaglerPlayer">
+            </div>
+            <nav class="menu">
+                <button class="menu-btn active" onclick="switchTab('releases')">Game Releases</button>
+                <button class="menu-btn" onclick="switchTab('custom')">Custom Clients</button>
+                <button class="menu-btn" onclick="switchTab('settings')">Settings</button>
+            </nav>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="content">
+            <!-- Game Releases Tab -->
+            <section id="releases" class="tab-content active">
+                <h3>Official Game Releases</h3>
+                <div class="card-grid">
+                    <div class="card" onclick="launchGame('https://eaglercraft.com')">
+                        <h4>EaglercraftX 1.8.8</h4>
+                        <p>Stable & standard release</p>
+                    </div>
+                    <div class="card" onclick="launchGame('https://eaglercraft.com')">
+                        <h4>Eaglercraft 1.5.2</h4>
+                        <p>Classic retro version</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Custom Clients Tab -->
+            <section id="custom" class="tab-content">
+                <h3>Popular Custom Clients</h3>
+                <div class="card-grid">
+                    <div class="card" onclick="launchGame('https://resentclient.com')">
+                        <h4>Resent Client</h4>
+                        <p>FPS boosting HUD mods</p>
+                    </div>
+                    <div class="card" onclick="launchGame('https://astraclient.com')">
+                        <h4>Astra Client</h4>
+                        <p>Advanced competitive tweaks</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Settings Tab -->
+            <section id="settings" class="tab-content">
+                <h3>Launcher Settings</h3>
+                <label>
+                    <input type="checkbox" id="new-window"> Launch game in a new window
+                </label>
+            </section>
+        </main>
+    </div>
+
+    <!-- Hidden Screen for Gameplay Overlays -->
+    <div id="game-overlay" class="hidden">
+        <button class="close-btn" onclick="closeGame()">✕ Close Game</button>
+        <iframe id="game-frame" src=""></iframe>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
+hauntedstudios69@penguin:~/eagler-launcher$ ^C
+hauntedstudios69@penguin:~/eagler-launcher$ ^C
+hauntedstudios69@penguin:~/eagler-launcher$ cat script.js
+function switchTab(tabId) {
+    document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+    document.querySelectorAll('.menu-btn').forEach(btn => btn.classList.remove('active'));
+    
+    document.getElementById(tabId).classList.add('active');
+    event.currentTarget.classList.add('active');
+}
+
+function launchGame(url) {
+    const openNewWindow = document.getElementById('new-window').checked;
+    const username = document.getElementById('username').value || 'EaglerPlayer';
+    
+    localStorage.setItem('launcher_username', username);
+
+    if (openNewWindow) {
+        window.open(url, '_blank');
+    } else {
+        const overlay = document.getElementById('game-overlay');
+        const iframe = document.getElementById('game-frame');
+        
+        iframe.src = url;
+        overlay.classList.remove('hidden');
+    }
+}
+
+function closeGame() {
+    const overlay = document.getElementById('game-overlay');
+    const iframe = document.getElementById('game-frame');
+    
+    iframe.src = "";
+    overlay.classList.add('hidden');
+}
+
+window.onload = function() {
+    const savedName = localStorage.getItem('launcher_username');
+    if (savedName) {
+        document.getElementById('username').value = savedName;
+    }
+};
